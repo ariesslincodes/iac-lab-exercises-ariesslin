@@ -43,9 +43,3 @@ variable "subnet6_cidr" {
   type        = string
   description = "Subnet 6 CIDR block"
 }
-
-variable "my_name" {
-  type        = string
-  description = "My name for adding in tags"
-  default     = "ariesslin"
-}
