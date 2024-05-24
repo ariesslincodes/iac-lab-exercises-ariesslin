@@ -93,7 +93,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.private_subnet_1.id
+  subnet_id     = aws_subnet.public_subnet_1.id
 
   tags = {
     Name = format("%s-ngw", var.prefix)
@@ -117,7 +117,7 @@ resource "aws_route_table" "private_route" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    ipv6_cidr_block = "0.0.0.0/0"
+    cidr_block = "0.0.0.0/0"
     nat_gateway_id  = aws_nat_gateway.ngw.id
   }
 
