@@ -1,6 +1,6 @@
 ### Note:
 
-1. When encountering errors like:
+1. **When encountering errors like:**
 
    ```
    ╷
@@ -19,7 +19,7 @@
    export AWS_PROFILE=infra_train
    ```
 
-2. To check the VPC created in AWS from CLI:
+2. **To check the VPC created in AWS from CLI:**
 
    ```bash
    aws ec2 describe-vpcs --region eu-central-1 --filters "Name=tag:Name,Values=iac-lab-placeholder:*"
