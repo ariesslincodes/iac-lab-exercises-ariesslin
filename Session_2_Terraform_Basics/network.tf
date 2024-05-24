@@ -83,7 +83,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-resource "aws_eip" "ngw_for_subnet_1" {
+resource "aws_eip" "nat" {
   domain = "vpc"
 
   tags = {
@@ -92,7 +92,7 @@ resource "aws_eip" "ngw_for_subnet_1" {
 }
 
 resource "aws_nat_gateway" "ngw" {
-  allocation_id = aws_eip.ngw_for_subnet_1.id
+  allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.private_subnet_1.id
 
   tags = {
