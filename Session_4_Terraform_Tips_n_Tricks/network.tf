@@ -9,11 +9,14 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+# data "aws_availability_zones" "available" {}
+
 resource "aws_subnet" "subnets" {
-  count                   = 6
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = cidrsubnet("192.168.1.0/25", 3, count.index + 1)
-  availability_zone       = format("%s%s", var.region, count.index % 2 == 0 ? "a" : "b")
+  count             = 6
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = cidrsubnet("192.168.1.0/25", 3, count.index + 1)
+  availability_zone = format("%s%s", var.region, count.index % 2 == 0 ? "a" : "b")
+  # availability_zone       = data.aws_availability_zones.available.names[count.index % length(data.aws_availability_zones.available.names)]
   map_public_ip_on_launch = count.index < 2 ? "true" : "false"
 
 
