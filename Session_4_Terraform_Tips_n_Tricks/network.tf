@@ -73,22 +73,14 @@ resource "aws_route_table" "private_route" {
   }
 }
 
-resource "aws_route_table_association" "public_subnet_1" {
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][0]
+resource "aws_route_table_association" "public_subnets" {
+  count          = 2
+  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][count.index]
   route_table_id = aws_route_table.public_route.id
 }
 
-resource "aws_route_table_association" "public_subnet_2" {
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][1]
-  route_table_id = aws_route_table.public_route.id
-}
-
-resource "aws_route_table_association" "private_subnet_1" {
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][2]
-  route_table_id = aws_route_table.private_route.id
-}
-
-resource "aws_route_table_association" "private_subnet_2" {
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][3]
+resource "aws_route_table_association" "private_subnets" {
+  count          = 2
+  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][count.index + 2]
   route_table_id = aws_route_table.private_route.id
 }
