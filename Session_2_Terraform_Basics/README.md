@@ -1,5 +1,3 @@
-Here's your content formatted in Markdown:
-
 ### Note:
 
 1. **What is the difference between an internet gateway and a NAT gateway?**
