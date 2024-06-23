@@ -1,3 +1,34 @@
+# import {
+#   to = aws_subnet.vpc_plus
+#   id = "subnet-01fbf97d6300a1c87"
+# }
+
+# moved {
+#   from = aws_subnet.vpc_plus
+#   to   = aws_subnet.private_subnet_3
+# }
+
+# resource "aws_subnet" "vpc_plus" {
+#   vpc_id = aws_vpc.vpc.id
+
+#   cidr_block = "192.168.1.96/28"
+
+#   tags = {
+#     Name = "ariesslin-subnet-plus"
+#   }
+# }
+
+# resource "aws_subnet" "private_subnet_3" {
+#   vpc_id                  = aws_vpc.vpc.id
+#   cidr_block              = "192.168.1.96/28"
+#   availability_zone       = format("%sb", var.region)
+#   map_public_ip_on_launch = "false"
+
+#   tags = {
+#     Name = format("%s-private-subnet-3", var.prefix)
+#   }
+# }
+
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = "true"
