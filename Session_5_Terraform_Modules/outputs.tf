@@ -4,6 +4,6 @@ output "nat_eip_ip_addr" {
 }
 
 output "vpc_id" {
-  value       = aws_vpc.vpc.id
+  value       = module.vpc.vpc_id
   description = "The ID of the VPC."
 }

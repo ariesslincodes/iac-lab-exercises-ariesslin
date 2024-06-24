@@ -1,5 +1,22 @@
-resource "aws_vpc" "vpc" {
-  cidr_block           = var.vpc_cidr
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = format("%s-vpc", var.prefix)
+  cidr = var.vpc_cidr
+
+  azs = slice(data.aws_availability_zones.available.names, 0, 2)
+
+  private_subnets = [
+    for i in range(2, 6) : cidrsubnet(var.vpc_cidr, 3, i)
+  ]
+
+  public_subnets = [
+    for i in range(0, 2) : cidrsubnet(var.vpc_cidr, 3, i)
+  ]
+
+  enable_nat_gateway = true
+  enable_vpn_gateway = true
+
   enable_dns_support   = "true"
   enable_dns_hostnames = "true"
   instance_tenancy     = "default"
@@ -9,24 +26,10 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-# data "aws_availability_zones" "available" {}
-
-resource "aws_subnet" "subnets" {
-  count             = 6
-  vpc_id            = aws_vpc.vpc.id
-  cidr_block        = cidrsubnet("192.168.1.0/25", 3, count.index + 1)
-  availability_zone = format("%s%s", var.region, count.index % 2 == 0 ? "a" : "b")
-  # availability_zone       = data.aws_availability_zones.available.names[count.index % length(data.aws_availability_zones.available.names)]
-  map_public_ip_on_launch = count.index < 2 ? "true" : "false"
-
-
-  tags = {
-    Name = format("%s-%s-subnet-%s", var.prefix, count.index < 2 ? "public" : count.index < 4 ? "private" : "secure", count.index % 2 == 0 ? 1 : 2)
-  }
-}
+data "aws_availability_zones" "available" {}
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = module.vpc.vpc_id
 
   tags = {
     Name = format("%s-gw", var.prefix)
@@ -43,7 +46,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = [for key, subnet in aws_subnet.subnets : subnet.id][0]
+  subnet_id     = module.vpc.public_subnets[0]
 
   tags = {
     Name = format("%s-ngw", var.prefix)
@@ -51,7 +54,7 @@ resource "aws_nat_gateway" "ngw" {
 }
 
 resource "aws_route_table" "public_route" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = module.vpc.vpc_id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -64,7 +67,7 @@ resource "aws_route_table" "public_route" {
 }
 
 resource "aws_route_table" "private_route" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = module.vpc.vpc_id
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -77,13 +80,13 @@ resource "aws_route_table" "private_route" {
 }
 
 resource "aws_route_table_association" "public_subnets" {
-  count          = 2
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][count.index]
+  count          = length(module.vpc.public_subnets)
+  subnet_id      = module.vpc.public_subnets[count.index]
   route_table_id = aws_route_table.public_route.id
 }
 
 resource "aws_route_table_association" "private_subnets" {
   count          = 2
-  subnet_id      = [for key, subnet in aws_subnet.subnets : subnet.id][count.index + 2]
+  subnet_id      = module.vpc.private_subnets[count.index]
   route_table_id = aws_route_table.private_route.id
 }
