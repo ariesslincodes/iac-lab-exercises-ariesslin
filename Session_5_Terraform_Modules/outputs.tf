@@ -1,5 +1,5 @@
 output "nat_eip_ip_addr" {
-  value       = aws_eip.nat.public_ip
+  value       = module.vpc.nat_public_ips[0]
   description = "The elastic IP address for NAT gateway."
 }
 
