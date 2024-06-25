@@ -7,3 +7,8 @@ variable "region" {
   type        = string
   description = "AWS region"
 }
+
+variable "repo_name" {
+  type        = string
+  description = "Repo name"
+}
