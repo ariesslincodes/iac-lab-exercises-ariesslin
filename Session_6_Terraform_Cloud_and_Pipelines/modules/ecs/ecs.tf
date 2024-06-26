@@ -75,7 +75,7 @@ resource "aws_ecs_task_definition" "this" {
   })
 
   runtime_platform {
-    cpu_architecture = "ARM64" #or "X86_64" if not running on M1 chipset 
+    cpu_architecture = "X86_64" #or "X86_64" if not running on M1 chipset 
   }
 }
 
