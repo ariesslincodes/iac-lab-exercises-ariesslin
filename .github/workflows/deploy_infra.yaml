@@ -1,6 +1,6 @@
 name: Deploy Infra
 
-on: workflow_dispatch
+on: [workflow_dispatch, push]
 
 env:
     AWS_REGION: eu-central-1
@@ -32,3 +32,24 @@ jobs:
                   aws sts get-caller-identity
 
         # Can add extra steps to run Terraform to create the AWS resources
+            - name: Terraform Setup
+              uses: hashicorp/setup-terraform@v3
+
+            - name: Terraform Format
+              run: terraform fmt -check
+              continue-on-error: false
+
+            - name: Terraform Linting
+              run: tflint --recursive
+              continue-on-error: false
+
+            - name: Terraform Init
+              run: terraform init
+
+            - name: Terraform Plan
+              run: terraform plan -var-file="dev.tfvars"
+
+            - name: Terraform Apply
+              if: github.ref == 'refs/heads/main'
+              run: terraform apply -auto-approve -var-file="dev.tfvars"
+
