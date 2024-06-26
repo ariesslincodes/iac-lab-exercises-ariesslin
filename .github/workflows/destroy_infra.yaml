@@ -1,4 +1,4 @@
-name: Deploy Infra
+name: Destroy Infra
 
 on: [workflow_dispatch]
 
@@ -7,10 +7,8 @@ env:
     IAM_ROLE: arn:aws:iam::160071257600:role/ariesslin-iac-lab-github-actions-role
 
 jobs:
-    # Can add extra jobs/steps to run any pre deploy tasks
-
     deploy:
-        name: Deploy
+        name: Destroy
         runs-on: ubuntu-latest
         permissions:
             id-token: write
@@ -31,7 +29,6 @@ jobs:
               run: |
                   aws sts get-caller-identity
 
-        # Can add extra steps to run Terraform to create the AWS resources
             - name: Terraform Setup
               uses: hashicorp/setup-terraform@v3
 
