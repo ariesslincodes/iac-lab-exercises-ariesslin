@@ -50,11 +50,14 @@ jobs:
 
             - name: Terraform Init
               run: terraform init
+              working-directory: Session_6_Terraform_Cloud_and_Pipelines
 
             - name: Terraform Plan
               run: terraform plan -var-file="dev.tfvars"
+              working-directory: Session_6_Terraform_Cloud_and_Pipelines
 
             - name: Terraform Apply
               if: github.ref == 'refs/heads/main'
               run: terraform apply -auto-approve -var-file="dev.tfvars"
+              working-directory: Session_6_Terraform_Cloud_and_Pipelines
 
