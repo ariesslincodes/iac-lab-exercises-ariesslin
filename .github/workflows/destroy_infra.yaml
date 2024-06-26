@@ -32,6 +32,10 @@ jobs:
             - name: Terraform Setup
               uses: hashicorp/setup-terraform@v3
 
+            - name: Terraform Init
+              run: terraform init
+              working-directory: Session_6_Terraform_Cloud_and_Pipelines
+
             - name: Terraform Destroy
               if: github.ref == 'refs/heads/main'
               run: terraform destroy -auto-approve -var-file="dev.tfvars"
