@@ -34,3 +34,13 @@ run "iam_tests" {
   }
 
 }
+
+run "s3_tests" {
+
+  command = plan
+
+  assert {
+    condition     = aws_s3_bucket.terraform_state.bucket == format("%s-tfstate", var.prefix)
+    error_message = "S3 bucket name did not match expected"
+  }
+}
