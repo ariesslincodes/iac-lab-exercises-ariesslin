@@ -18,10 +18,10 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@2ec54502e3e7b5d9591613811da6daded35caa19
+              uses: aws-actions/configure-aws-credentials@v4
               with:
                   role-session-name: GitHubActionsSession
                   role-to-assume: ${{ env.IAM_ROLE }}
@@ -34,6 +34,11 @@ jobs:
         # Can add extra steps to run Terraform to create the AWS resources
             - name: Terraform Setup
               uses: hashicorp/setup-terraform@v3
+
+            - name: TFLint Setup
+              uses: terraform-linters/setup-tflint@v4
+              with:
+                tflint_version: v0.50.3
 
             - name: Terraform Format
               run: terraform fmt -check
